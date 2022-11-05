@@ -1,0 +1,7 @@
+{
+  "name": "CoffeGoatDepartment",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
