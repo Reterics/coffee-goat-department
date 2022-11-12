@@ -1,0 +1,79 @@
+.imageThumbnailFlex {
+    max-width: 55px;
+    max-height: 55px;
+    display: inline-flex;
+}
+
+#thumbnailContent {
+    min-height: 58px;
+}
+#thumbnailContent.opened {
+    min-height: 50vh;
+}
+#thumbnailContent.opened ion-thumbnail{
+    width: 72px;
+    height: 72px;
+}
+
+#editorCanvas{
+    width: calc(100% - 65px);
+    height: calc(100% - 56px - 20px);
+    border: 1px solid var(--ion-tab-bar-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.07))));
+    margin: 10px 58px 10px auto;
+}
+
+#editorCanvas > * {
+    position: absolute;
+    /*width: 100%;
+    height: 100%;*/
+    /*width: inherit;
+    height: inherit;*/
+    width: inherit;
+    height: calc(100% - 3 * 56px);
+    /*border: 1px solid var(--ion-tab-bar-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.07))));
+    */
+}
+
+#editorCanvas .text-element {
+    position: absolute;
+    padding: 15px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+#editorCanvas .text-element.state-drag {
+    cursor: pointer;
+}
+#editorCanvas .image-element {
+    position: absolute;
+}
+#editorCanvas .state-edit,
+#editorCanvas .state-drag {
+    touch-action: none
+}
+
+#editorCanvas .selected {
+    border: 1px solid black;
+}
+ion-fab-button {
+    z-index: 900;
+}
+#editorCanvas, body, ion-content, .ion-page {
+    overflow: hidden;
+}
+
+
+.rightFabButton {
+    right: calc(var(--ion-safe-area-right, 0px));
+}
+
+#footer {
+    bottom: calc(var(--offset-bottom, 0px));
+    width: 100%;
+    position: absolute;
+    z-index: 901;
+}
+#footer > * {
+    position: relative;
+}

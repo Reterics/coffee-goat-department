@@ -13,9 +13,11 @@
     "@capacitor/keyboard": "4.0.1",
     "@capacitor/preferences": "^4.0.1",
     "@capacitor/status-bar": "4.0.1",
+    "@interactjs/interactjs": "^1.10.17",
     "@ionic/pwa-elements": "^3.1.1",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",
+    "@ionic/storage": "^3.0.6",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^12.6.3",
@@ -77,7 +79,8 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "4.4.0"
+    "@capacitor/cli": "4.4.0",
+    "@interactjs/types": "^1.10.17"
   },
   "description": "An Ionic project"
 }

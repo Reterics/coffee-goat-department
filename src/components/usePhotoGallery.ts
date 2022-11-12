@@ -6,6 +6,7 @@ import { Directory, Filesystem } from '@capacitor/filesystem';
 import {useState} from "react";
 import {CameraResultType, CameraSource, Photo} from "@capacitor/camera";
 import {isPlatform} from "@ionic/react";
+import StorageManager from "./storageManager";
 
 const { Camera  } = Plugins;
 
@@ -34,7 +35,9 @@ export async function base64FromPath(path: string): Promise<string> {
 
 export function usePhotoGallery() {
     const [photos, setPhotos] = useState<UserPhoto[]>([]);
-    const savePicture = async (photo: Photo, fileName: string): Promise<UserPhoto> => {
+    let storageManager = new StorageManager();
+
+    const base64FileData = async (photo: Photo): Promise<string> => {
         let base64Data: string;
         // "hybrid" will detect Cordova or Capacitor;
         if (isPlatform('hybrid')) {
@@ -45,6 +48,11 @@ export function usePhotoGallery() {
         } else {
             base64Data = await base64FromPath(photo.webPath!);
         }
+        return base64Data;
+    };
+
+    const savePicture = async (photo: Photo, fileName: string): Promise<UserPhoto> => {
+        const base64Data = await base64FileData(photo);
         const savedFile = await Filesystem.writeFile({
             path: fileName,
             data: base64Data,
@@ -68,6 +76,27 @@ export function usePhotoGallery() {
         }
     };
 
+    const pickPhotoFromGallery = async () => {
+        const result = await Camera.pickImages({
+            quality: 100,
+        });
+        const newPhotos:UserPhoto[] = [];
+
+        for (let i = 0; i < result.photos.length; i++){
+            const photo = result.photos[i];
+            // photo.webviewPath = photo.webPath;
+            const fileName = new Date().getTime() + '.jpeg';
+            const savedFileImage = await savePicture(photo, fileName);
+            newPhotos.push(savedFileImage);
+        }
+        photos.forEach(photo => {
+            newPhotos.push(photo);
+        });
+        setPhotos(newPhotos);
+        await storageManager.saveLocally(PHOTO_STORAGE, newPhotos);
+        storageManager.saveLoadedKeyWithDelay();
+    }
+
     const takePhoto = async () => {
         const photo = await Camera.getPhoto({
             quality: 100,
@@ -79,24 +108,34 @@ export function usePhotoGallery() {
         const savedFileImage = await savePicture(photo, fileName);
         const newPhotos = [savedFileImage, ...photos];
         setPhotos(newPhotos);
+        await storageManager.saveLocally(PHOTO_STORAGE, newPhotos);
+        storageManager.saveLoadedKeyWithDelay();
     };
-    const loadSaved = async () => {
-        const { value } = await Preferences.get({ key: PHOTO_STORAGE });
 
-        const photosInPreferences = (value ? JSON.parse(value) : []) as UserPhoto[];
+    const loadSaved = async () => {
+        await storageManager.initStorage();
+        const photosInPreferences = (await storageManager.get(PHOTO_STORAGE) || []) as UserPhoto[]; // Preferences.get({ key: PHOTO_STORAGE });
+
+        //const photosInPreferences = (value ? JSON.parse(value) : []) as UserPhoto[];
         // If running on the web...
         if (!isPlatform('hybrid')) {
             for (let photo of photosInPreferences) {
-                const file = await Filesystem.readFile({
-                    path: photo.filepath,
-                    directory: Directory.Data,
-                });
-                // Web platform only: Load the photo as base64 data
-                photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
+                try {
+                    const file = await Filesystem.readFile({
+                        path: photo.filepath,
+                        directory: Directory.Data
+                    });
+                    // Web platform only: Load the photo as base64 data
+                    photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
+                } catch (e) {
+                    console.error(e);
+                }
+
             }
         }
         setPhotos(photosInPreferences);
     };
+
     const deletePhoto = async (photo: UserPhoto) => {
         // Remove this photo from the Photos reference data array
         const newPhotos = photos.filter((p) => p.filepath !== photo.filepath);
@@ -112,12 +151,14 @@ export function usePhotoGallery() {
         });
         setPhotos(newPhotos);
     };
+
     return{
         photos,
         takePhoto,
         savePicture,
         loadSaved,
-        deletePhoto
+        deletePhoto,
+        pickPhotoFromGallery
     };
 }
 
