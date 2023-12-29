@@ -1,7 +1,26 @@
 {
   "name": "coffee-goat-department",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
+  "license": "GPL-3.0",
+  "author": {
+    "email": "reterics.attila@gmail.com",
+    "name": "Attila Reterics",
+    "url": "https://reterics.com/"
+  },
+  "description": "Ionic + React based Image and Meme Editor Project",
+  "scripts": {
+  "start": "ionic serve",
+  "build": "react-scripts build",
+  "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
+  "eject": "react-scripts eject",
+
+  "update_android": "ionic capacitor copy android",
+  "build_apk": "ionic capacitor build android",
+  "Sync": "ionic cap sync",
+  "Generate Release Build": "npx cap copy && npx cap sync",
+  "Open Android Studio": "npx cap open android"
+},
   "dependencies": {
     "@capacitor/android": "4.4.0",
     "@capacitor/app": "4.1.0",
@@ -49,18 +68,6 @@
     "workbox-strategies": "^5.1.4",
     "workbox-streams": "^5.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
-    "eject": "react-scripts eject",
-    "Start_Server": "ionic serve",
-    "Update_Android_Project": "ionic capacitor copy android",
-    "Build_APK": "ionic capacitor build android",
-    "Sync": "ionic cap sync",
-    "Generate Release Build": "npx cap copy && npx cap sync",
-    "Open Android Studio": "npx cap open android"
-  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -83,5 +90,4 @@
     "@capacitor/cli": "4.4.0",
     "@interactjs/types": "^1.10.17"
   },
-  "description": "An Ionic project"
 }
