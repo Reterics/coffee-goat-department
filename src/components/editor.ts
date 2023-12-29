@@ -5,21 +5,23 @@ import interact from "interactjs"
  * @class
  */
 class MainImageEditor {
-    parent: Element | null | undefined;
-    canvas: HTMLCanvasElement | undefined;
-    svg: SVGSVGElement | undefined;
-    div: Element | undefined;
-    selected: Element | undefined;
+    parent?: Element | null;
+    canvas?: HTMLCanvasElement;
+    svg?: SVGSVGElement;
+    div?: Element;
+    selected?: Element;
+    setSelectedState?: Function;
     initNeeded: boolean;
     constructor() {
         this.initNeeded = true;
     }
 
-    public init(selector:string) {
+    public init(selector:string, setSelected: Function|undefined) {
         if (!this.initNeeded) {
             return;
         }
         this.initNeeded = false;
+        this.setSelectedState = setSelected;
         console.log('Initialize Editor...');
         this.parent = document.querySelector(selector);
         if (!this.parent) {
@@ -132,7 +134,12 @@ class MainImageEditor {
         element.onclick =  () => {
             if (!element.classList.contains('selected')) {
                 this.div?.querySelectorAll('.selected').forEach(node=>node.classList.remove('selected'));
-                element.classList.add('selected')
+                element.classList.add('selected');
+
+                this.selected = element;
+                if (this.setSelectedState) {
+                    this.setSelectedState(this.selected)
+                }
             }
         }
     }
@@ -271,7 +278,9 @@ class MainImageEditor {
         this.selected = imageElement;
         this.applyInteractTo(imageElement);
         this.makeSelectable(imageElement);
-
+        if (this.setSelectedState) {
+            this.setSelectedState(this.selected)
+        }
     }
     public addTextElement() {
         const textElement = this.createElement({
@@ -286,6 +295,9 @@ class MainImageEditor {
         this.selected = textElement;
         this.applyInteractTo(textElement);
         this.makeSelectable(textElement);
+        if (this.setSelectedState) {
+            this.setSelectedState(this.selected)
+        }
     }
 
 
@@ -333,6 +345,16 @@ class MainImageEditor {
             })
         }
 
+    }
+
+    public removeSelected() {
+        if (this.selected) {
+            this.selected.outerHTML = '';
+            this.selected = undefined;
+            if (this.setSelectedState) {
+                this.setSelectedState(this.selected)
+            }
+        }
     }
 
 }

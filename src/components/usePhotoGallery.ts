@@ -37,22 +37,47 @@ export function usePhotoGallery() {
     const [photos, setPhotos] = useState<UserPhoto[]>([]);
     let storageManager = new StorageManager();
 
-    const base64FileData = async (photo: Photo): Promise<string> => {
-        let base64Data: string;
+    const readBlobAsBase64 = (blob: Blob): Promise<string|null> => {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = function() {
+                const result = reader.result;
+                if (typeof result === 'string' || result === null) {
+                    resolve(result);
+                } else {
+                    const enc = new TextDecoder("utf-8");
+                    resolve(enc.decode(result));
+                }
+            };
+            reader.onerror = () => {
+                resolve(null);
+            };
+        });
+    }
+    const base64FileData = async (photo: Photo): Promise<string|null> => {
+        let base64Data: string|null;
         // "hybrid" will detect Cordova or Capacitor;
         if (isPlatform('hybrid')) {
             const file = await Filesystem.readFile({
                 path: photo.path!,
             });
-            base64Data = file.data;
+            if (file.data instanceof Blob) {
+                base64Data = await readBlobAsBase64(file.data);
+            } else {
+                base64Data = file.data;
+            }
         } else {
             base64Data = await base64FromPath(photo.webPath!);
         }
         return base64Data;
     };
 
-    const savePicture = async (photo: Photo, fileName: string): Promise<UserPhoto> => {
+    const savePicture = async (photo: Photo, fileName: string): Promise<UserPhoto|null> => {
         const base64Data = await base64FileData(photo);
+        if (!base64Data) {
+            return null;
+        }
         const savedFile = await Filesystem.writeFile({
             path: fileName,
             data: base64Data,
@@ -87,7 +112,9 @@ export function usePhotoGallery() {
             // photo.webviewPath = photo.webPath;
             const fileName = new Date().getTime() + '.jpeg';
             const savedFileImage = await savePicture(photo, fileName);
-            newPhotos.push(savedFileImage);
+            if (savedFileImage) {
+                newPhotos.push(savedFileImage);
+            }
         }
         photos.forEach(photo => {
             newPhotos.push(photo);
@@ -106,10 +133,12 @@ export function usePhotoGallery() {
         });
         const fileName = new Date().getTime() + '.jpeg';
         const savedFileImage = await savePicture(photo, fileName);
-        const newPhotos = [savedFileImage, ...photos];
-        setPhotos(newPhotos);
-        await storageManager.saveLocally(PHOTO_STORAGE, newPhotos);
-        storageManager.saveLoadedKeyWithDelay();
+        if (savedFileImage) {
+            const newPhotos = [savedFileImage, ...photos];
+            setPhotos(newPhotos);
+            storageManager.saveLocally(PHOTO_STORAGE, newPhotos);
+            storageManager.saveLoadedKeyWithDelay();
+        }
     };
 
     const loadSaved = async () => {

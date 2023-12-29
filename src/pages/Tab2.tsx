@@ -1,23 +1,13 @@
 import {
-    IonActionSheet,
-    IonButton,
-    IonCol,
-    IonContent,
-    IonFab,
-    IonFabButton, IonFabList, IonFooter,
-    IonGrid,
-    IonHeader, IonIcon,
-    IonImg,
-    IonPage,
-    IonRow, IonThumbnail,
-    IonTitle,
-    IonToolbar
+    IonContent, IonFab, IonFabButton, IonFabList, IonFooter,
+    IonHeader, IonIcon, IonPage, IonThumbnail,
+    IonTitle, IonToolbar
 } from '@ionic/react';
 import './Tab2.css';
 import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
 import React, {useEffect, useState} from "react";
 import {
-    addOutline, appsOutline, camera, cameraOutline, caretDown, caretUp, close, closeOutline, copyOutline,
+    addOutline, appsOutline, cameraOutline, caretDown, caretUp, closeOutline,
     ellipsisHorizontalOutline, imageOutline,
     layersOutline,
     move,
@@ -25,21 +15,23 @@ import {
     removeOutline,
     returnUpBackOutline,
     returnUpForwardOutline,
-    textOutline, trash, trashBinOutline
+    textOutline, trashBinOutline
 } from 'ionicons/icons';
 import MainImageEditor from "../components/editor";
 let mainImageEditor:MainImageEditor;
 const Tab2: React.FC = () => {
-    const {takePhoto,loadSaved,photos,pickPhotoFromGallery,deletePhoto }  = usePhotoGallery();
+    const {takePhoto, loadSaved, photos, pickPhotoFromGallery, deletePhoto} = usePhotoGallery();
 
     if (!mainImageEditor) {
         mainImageEditor = new MainImageEditor()
     }
     const [photoToDelete, setPhotoToDelete] = useState<UserPhoto>();
     const [thumbnailContainerIcon, setThumbnailContainerIcon] = useState("up");
+
+    const [selected, setSelected] = useState<HTMLElement|undefined>(undefined)
     useEffect(() => {
         loadSaved().finally(()=>{
-            mainImageEditor.init("#editorCanvas");
+            mainImageEditor.init("#editorCanvas", setSelected);
             // mainImageEditor.applyMultiTouchRotationFeature();
         });
     }, []);
@@ -150,9 +142,10 @@ const Tab2: React.FC = () => {
           </IonFabButton>
 
 
-          <IonFabButton color="danger" size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+          <IonFabButton color="danger" size="small" onClick={() => mainImageEditor.removeSelected()} style={{
               position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
-              left: "calc(var(--ion-safe-area-left, 0) + 137.5px)"
+              left: "calc(var(--ion-safe-area-left, 0) + 137.5px)",
+              display: selected ? 'block' : 'none'
           }} placeholder={undefined}>
               <IonIcon size="small" icon={trashBinOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
