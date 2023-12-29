@@ -1,9 +1,9 @@
+import interact from "interactjs"
+
 /**
  * @name MainImageEditor
  * @class
  */
-import interact from "@interactjs/interactjs"
-
 class MainImageEditor {
     parent: Element | null | undefined;
     canvas: HTMLCanvasElement | undefined;
@@ -138,11 +138,8 @@ class MainImageEditor {
     }
 
     private applyInteractTo(element: HTMLElement) {
-        let angle = 0;
-        //const self = this;
-        // @ts-ignore
+        // let angle = 0;
         const interacted = interact('#' + element.id)
-            // @ts-ignore
             .draggable({
                 // enable inertial throwing
                 inertia: true,
