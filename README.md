@@ -2,7 +2,7 @@
 
 Ionic + React based Image and Meme Editor Project.
 
-![Coffee Goat Department Logo](./public/assets/images/logo-256.png)
+![Screenshot](./public/assets/images/screenshot.png) ![Coffee Goat Department Logo](./public/assets/images/logo-256.png)
 
 ## Install
 
