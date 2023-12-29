@@ -14,6 +14,7 @@
     "@capacitor/preferences": "^4.0.1",
     "@capacitor/status-bar": "4.0.1",
     "@interactjs/interactjs": "^1.10.17",
+    "@ionic/core": "^7.6.2",
     "@ionic/pwa-elements": "^3.1.1",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",
