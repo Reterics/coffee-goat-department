@@ -20,12 +20,11 @@ import {
 import MainImageEditor from "../components/editor";
 let mainImageEditor:MainImageEditor;
 const Tab2: React.FC = () => {
-    const {takePhoto, loadSaved, photos, pickPhotoFromGallery, deletePhoto} = usePhotoGallery();
+    const {takePhoto, loadSaved, photos, pickPhotoFromGallery} = usePhotoGallery();
 
     if (!mainImageEditor) {
         mainImageEditor = new MainImageEditor()
     }
-    const [photoToDelete, setPhotoToDelete] = useState<UserPhoto>();
     const [thumbnailContainerIcon, setThumbnailContainerIcon] = useState("up");
 
     const [selected, setSelected] = useState<HTMLElement|undefined>(undefined)
@@ -34,7 +33,7 @@ const Tab2: React.FC = () => {
             mainImageEditor.init("#editorCanvas", setSelected);
             // mainImageEditor.applyMultiTouchRotationFeature();
         });
-    }, []);
+    }, [ loadSaved ]);
 
     const toggleImageSelectorContainer = () => {
         const footer = document.getElementById("footer");
@@ -192,7 +191,7 @@ const Tab2: React.FC = () => {
                           photos.map((photo, index) =>
                               <div key={index} className={"imageThumbnailFlex"}>
                                   <IonThumbnail placeholder={undefined}>
-                                      <img src={photo.webviewPath} onClick={()=>imageOnClick(photo)}/>
+                                      <img src={photo.webviewPath} onClick={()=>imageOnClick(photo)} alt="" />
                                   </IonThumbnail>
 
                               </div>

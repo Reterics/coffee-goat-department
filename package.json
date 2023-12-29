@@ -11,7 +11,7 @@
   "description": "Ionic + React based Image and Meme Editor Project",
   "scripts": {
     "start": "ionic serve",
-    "build": "react-scripts build",
+    "build": "ionic build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject",
     "update_android": "ionic capacitor copy android",
@@ -89,6 +89,7 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "5.6.0"
+    "@capacitor/cli": "5.6.0",
+    "@babel/plugin-proposal-private-property-in-object": "latest"
   }
 }
