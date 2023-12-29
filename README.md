@@ -1,4 +1,5 @@
 # Coffee Goat Department
+[![Build](https://github.com/Reterics/coffee-goat-department/actions/workflows/build.yml/badge.svg)](https://github.com/Reterics/coffee-goat-department/actions/workflows/build.yml)
 
 Ionic + React based Image and Meme Editor Project.
 
