@@ -15,7 +15,7 @@ import {
 } from '@ionic/react';
 import './Tab2.css';
 import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     addOutline, appsOutline, camera, cameraOutline, caretDown, caretUp, close, closeOutline, copyOutline,
     ellipsisHorizontalOutline, imageOutline,
@@ -79,103 +79,126 @@ const Tab2: React.FC = () => {
     }
     // @ts-ignore
     return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Meme/Image Editor</IonTitle>
+    <IonPage placeholder={undefined}>
+      <IonHeader placeholder={undefined}>
+        <IonToolbar placeholder={undefined}>
+          <IonTitle placeholder={undefined}>Meme/Image Editor</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent fullscreen placeholder={undefined}>
           <div id={"editorCanvas"}>
 
           </div>
-          <IonFabButton size="small" onClick={()=>mainImageEditor.addTextElement()} style={{position:"absolute", top: "55px",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={textOutline}> </IonIcon>
+          <IonFabButton size="small" onClick={() => mainImageEditor.addTextElement()} style={{
+              position: "absolute", top: "55px",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={textOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={()=>mainImageEditor.moveUpper()} style={{position:"absolute", top: "110px",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={layersOutline}> </IonIcon>
+          <IonFabButton size="small" onClick={() => mainImageEditor.moveUpper()} style={{
+              position: "absolute", top: "110px",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={layersOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={()=>mainImageEditor.switchToDrag()} style={{position:"absolute", top: "165px",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={move}> </IonIcon>
+          <IonFabButton size="small" onClick={() => mainImageEditor.switchToDrag()} style={{
+              position: "absolute", top: "165px",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={move} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={()=>mainImageEditor.switchToEdit()} style={{position:"absolute", top: "220px",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={pencil}> </IonIcon>
+          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+              position: "absolute", top: "220px",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={pencil} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={()=>mainImageEditor.switchToEdit()} style={{position:"absolute", top: "330px",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={addOutline}> </IonIcon>
+          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+              position: "absolute", top: "330px",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={addOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
-          <IonFabButton size="small" onClick={()=>mainImageEditor.switchToEdit()} style={{position:"absolute", top: "385px",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={removeOutline}> </IonIcon>
-          </IonFabButton>
-
-
-
-
-          <IonFabButton size="small" onClick={() => toggleImageSelectorContainer()} style={{position:"absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
-              right: "calc(var(--ion-safe-area-right, 0px))"}}>
-              <IonIcon size="small" icon={appsOutline}> </IonIcon>
-
-          </IonFabButton>
-
-
-          <IonFabButton size="small" onClick={()=>mainImageEditor.switchToEdit()} style={{position:"absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
-              left: "calc(var(--ion-safe-area-left, 0) + 55px)"}}>
-              <IonIcon size="small" icon={returnUpBackOutline}> </IonIcon>
+          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+              position: "absolute", top: "385px",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={removeOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
 
-          <IonFabButton color="danger" size="small" onClick={()=>mainImageEditor.switchToEdit()} style={{position:"absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
-              left: "calc(var(--ion-safe-area-left, 0) + 137.5px)"}}>
-              <IonIcon size="small" icon={trashBinOutline}> </IonIcon>
+
+
+          <IonFabButton size="small" onClick={() => toggleImageSelectorContainer()} style={{
+              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={appsOutline} placeholder={undefined}> </IonIcon>
+
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={()=>mainImageEditor.switchToEdit()} style={{position:"absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
-              left: "calc(var(--ion-safe-area-left, 0px) + 220px)"}}>
-              <IonIcon size="small" icon={returnUpForwardOutline}> </IonIcon>
+
+          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
+              left: "calc(var(--ion-safe-area-left, 0) + 55px)"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={returnUpBackOutline} placeholder={undefined}> </IonIcon>
+          </IonFabButton>
+
+
+          <IonFabButton color="danger" size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
+              left: "calc(var(--ion-safe-area-left, 0) + 137.5px)"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={trashBinOutline} placeholder={undefined}> </IonIcon>
+          </IonFabButton>
+
+          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
+              left: "calc(var(--ion-safe-area-left, 0px) + 220px)"
+          }} placeholder={undefined}>
+              <IonIcon size="small" icon={returnUpForwardOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
           <div id={"footer"} style={{display:"none"}}>
 
-              <IonFab vertical={"bottom"} horizontal={"end"} slot={"fixed"} style={{right:'calc(var(--ion-safe-area-right, 0px))', position: 'absolute'}}>
-                  <IonFabButton size="small" >
-                      <IonIcon size="small" icon={ellipsisHorizontalOutline}> </IonIcon>
+              <IonFab vertical={"bottom"} horizontal={"end"} slot={"fixed"}
+                      style={{right: 'calc(var(--ion-safe-area-right, 0px))', position: 'absolute'}}
+                      placeholder={undefined}>
+                  <IonFabButton size="small" placeholder={undefined} >
+                      <IonIcon size="small" icon={ellipsisHorizontalOutline} placeholder={undefined}> </IonIcon>
                   </IonFabButton>
-                  <IonFabList side="start">
+                  <IonFabList side="start" placeholder={undefined}>
 
 
-                      <IonFabButton onClick={()=> takePhoto()}>
-                          <IonIcon icon={cameraOutline}> </IonIcon>
+                      <IonFabButton onClick={() => takePhoto()} placeholder={undefined}>
+                          <IonIcon icon={cameraOutline} placeholder={undefined}> </IonIcon>
                       </IonFabButton>
-                      <IonFabButton onClick={()=> pickImageFromGallery()}>
-                          <IonIcon icon={imageOutline}> </IonIcon>
+                      <IonFabButton onClick={() => pickImageFromGallery()} placeholder={undefined}>
+                          <IonIcon icon={imageOutline} placeholder={undefined}> </IonIcon>
                       </IonFabButton>
 
-                      <IonFabButton size="small" onClick={()=> toggleImageSelectorContainer()}>
-                          <IonIcon size="small" icon={closeOutline}> </IonIcon>
+                      <IonFabButton size="small" onClick={() => toggleImageSelectorContainer()} placeholder={undefined}>
+                          <IonIcon size="small" icon={closeOutline} placeholder={undefined}> </IonIcon>
                       </IonFabButton>
-                      <IonFabButton size="small" onClick={()=> toggleThumbnailContainer()}>
-                          <IonIcon size="small" icon={thumbnailContainerIcon === "up" ? caretUp : caretDown}> </IonIcon>
+                      <IonFabButton size="small" onClick={() => toggleThumbnailContainer()} placeholder={undefined}>
+                          <IonIcon size="small" icon={thumbnailContainerIcon === "up" ? caretUp : caretDown}
+                                   placeholder={undefined}> </IonIcon>
                       </IonFabButton>
 
                   </IonFabList>
               </IonFab>
-              <IonToolbar>
-                  <IonContent id="thumbnailContent" style={{ display:"flex"}}>
+              <IonToolbar placeholder={undefined}>
+                  <IonContent id="thumbnailContent" style={{display: "flex"}} placeholder={undefined}>
 
                       {
                           photos.map((photo, index) =>
                               <div key={index} className={"imageThumbnailFlex"}>
-                                  <IonThumbnail>
+                                  <IonThumbnail placeholder={undefined}>
                                       <img src={photo.webviewPath} onClick={()=>imageOnClick(photo)}/>
                                   </IonThumbnail>
 
@@ -186,7 +209,7 @@ const Tab2: React.FC = () => {
               </IonToolbar>
           </div>
       </IonContent>
-        <IonFooter style={{display:"none"}}>
+        <IonFooter style={{display: "none"}} placeholder={undefined}>
 
         </IonFooter>
     </IonPage>
