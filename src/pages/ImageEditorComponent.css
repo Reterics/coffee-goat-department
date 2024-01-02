@@ -77,3 +77,23 @@ ion-fab-button {
 #footer > * {
     position: relative;
 }
+
+
+input.colorPicker {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+}
+input.colorPicker::-webkit-color-swatch {
+    border-radius: 50%;
+    border: 3px solid var(--ion-color-primary, #3880ff);;
+}
+input.colorPicker::-moz-color-swatch {
+    border-radius: 50%;
+    border: 3px solid var(--ion-color-primary, #3880ff);;
+}

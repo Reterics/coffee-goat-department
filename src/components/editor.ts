@@ -12,8 +12,11 @@ class MainImageEditor {
     selected?: Element;
     setSelectedState?: Function;
     initNeeded: boolean;
+    private color: string;
+    private _colorTimeout: null|undefined|number|NodeJS.Timeout;
     constructor() {
         this.initNeeded = true;
+        this.color = "black";
     }
 
     public init(selector:string, setSelected: Function|undefined) {
@@ -83,21 +86,23 @@ class MainImageEditor {
 
     }
 
-    private changeEditorState () {
+    public toggleEditorState () {
         if (!this.selected) {
-            return;
+            return 'none';
         }
+        let state = 'edit';
+
         const element = this.selected as HTMLElement;
-        element.onclick = function () {
-            if(element.classList.contains('state-edit')) {
-                element.classList.remove('state-edit');
-                element.classList.add('state-drag');
-            } else if(element.classList.contains('state-drag')) {
-                element.classList.remove('state-drag');
-            } else {
-                element.classList.add('state-edit');
-            }
+        if (element.classList.contains('state-edit')) {
+            this.switchToDrag()
+            state = 'drag';
+        } else if(element.classList.contains('state-drag')) {
+            this.switchToEdit()
+        } else {
+            this.switchToEdit()
         }
+
+        return state;
     }
 
     public switchToDrag () {
@@ -357,6 +362,18 @@ class MainImageEditor {
         }
     }
 
+
+    public setColor(color: string, setColor: Function) {
+        console.log('Color: '+color);
+        this.color = color;
+        if (this._colorTimeout) {
+            clearTimeout(this._colorTimeout);
+        }
+        this._colorTimeout = setTimeout(() => {
+            setColor(this.color);
+        }, 500);
+        return color;
+    }
 }
 
 export default MainImageEditor;

@@ -1,9 +1,9 @@
 import {
     IonContent, IonFab, IonFabButton, IonFabList, IonFooter,
-    IonHeader, IonIcon, IonPage, IonThumbnail,
+    IonHeader, IonIcon, IonInput, IonPage, IonThumbnail,
     IonTitle, IonToolbar
 } from '@ionic/react';
-import './Tab2.css';
+import './ImageEditorComponent.css';
 import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
 import React, {useEffect, useState} from "react";
 import {
@@ -18,14 +18,17 @@ import {
     textOutline, trashBinOutline
 } from 'ionicons/icons';
 import MainImageEditor from "../components/editor";
+
 let mainImageEditor:MainImageEditor;
-const Tab2: React.FC = () => {
+const ImageEditorComponent: React.FC = () => {
     const {takePhoto, loadSaved, photos, pickPhotoFromGallery} = usePhotoGallery();
 
     if (!mainImageEditor) {
         mainImageEditor = new MainImageEditor()
     }
     const [thumbnailContainerIcon, setThumbnailContainerIcon] = useState("up");
+    const [state, setState] = useState("drag");
+    const [color, setColor] = useState("black");
 
     const [selected, setSelected] = useState<HTMLElement|undefined>(undefined)
     useEffect(() => {
@@ -90,22 +93,31 @@ const Tab2: React.FC = () => {
           <IonFabButton size="small" onClick={() => mainImageEditor.moveUpper()} style={{
               position: "absolute", top: "110px",
               right: "calc(var(--ion-safe-area-right, 0px))"
-          }} placeholder={undefined}>
+          }} disabled={!selected} placeholder={undefined}>
               <IonIcon size="small" icon={layersOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => mainImageEditor.switchToDrag()} style={{
+          <IonFabButton size="small" style={{
               position: "absolute", top: "165px",
               right: "calc(var(--ion-safe-area-right, 0px))"
-          }} placeholder={undefined}>
-              <IonIcon size="small" icon={move} placeholder={undefined}> </IonIcon>
+          }} placeholder={undefined} color={color}>
+              <input type="color"
+                     className="colorPicker"
+                     style={{padding: "0px"}}
+                     onChange={(e)=> mainImageEditor.setColor(e.target.value, setColor)}/>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+          <IonFabButton size="small" onClick={() => setState(mainImageEditor.toggleEditorState())} style={{
               position: "absolute", top: "220px",
               right: "calc(var(--ion-safe-area-right, 0px))"
-          }} placeholder={undefined}>
-              <IonIcon size="small" icon={pencil} placeholder={undefined}> </IonIcon>
+          }} disabled={!selected} placeholder={undefined}>
+              {
+                  state === 'none' || state === 'drag' ?
+                      <IonIcon size="small" icon={pencil} placeholder={undefined}> </IonIcon>
+                      : <IonIcon size="small" icon={addOutline} placeholder={undefined}> </IonIcon>
+
+              }
+
           </IonFabButton>
 
           <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
@@ -129,7 +141,6 @@ const Tab2: React.FC = () => {
               right: "calc(var(--ion-safe-area-right, 0px))"
           }} placeholder={undefined}>
               <IonIcon size="small" icon={appsOutline} placeholder={undefined}> </IonIcon>
-
           </IonFabButton>
 
 
@@ -208,7 +219,7 @@ const Tab2: React.FC = () => {
   );
 };
 
-export default Tab2;
+export default ImageEditorComponent;
 /*
 * <IonActionSheet
               isOpen={!!photoToDelete}
