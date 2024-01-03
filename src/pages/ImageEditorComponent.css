@@ -15,14 +15,14 @@
     height: 72px;
 }
 
-#editorCanvas{
+#canvasEditor{
     width: calc(100% - 65px);
     height: calc(100% - 56px - 20px);
     border: 1px solid var(--ion-tab-bar-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.07))));
     margin: 10px 58px 10px auto;
 }
 
-#editorCanvas > * {
+#canvasEditor > * {
     position: absolute;
     /*width: 100%;
     height: 100%;*/
@@ -34,7 +34,7 @@
     */
 }
 
-#editorCanvas .text-element {
+#canvasEditor .text-element {
     position: absolute;
     padding: 15px;
     display: flex;
@@ -42,24 +42,24 @@
     justify-content: center;
     align-items: center;
 }
-#editorCanvas .text-element.state-drag {
+#canvasEditor .text-element.state-drag {
     cursor: pointer;
 }
-#editorCanvas .image-element {
+#canvasEditor .image-element {
     position: absolute;
 }
-#editorCanvas .state-edit,
-#editorCanvas .state-drag {
+#canvasEditor .state-edit,
+#canvasEditor .state-drag {
     touch-action: none
 }
 
-#editorCanvas .selected {
+#canvasEditor .selected {
     border: 1px solid black;
 }
 ion-fab-button {
     z-index: 900;
 }
-#editorCanvas, body, ion-content, .ion-page {
+#canvasEditor, body, ion-content, .ion-page {
     overflow: hidden;
 }
 
