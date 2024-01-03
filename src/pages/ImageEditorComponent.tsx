@@ -1,6 +1,6 @@
 import {
     IonContent, IonFab, IonFabButton, IonFabList, IonFooter,
-    IonHeader, IonIcon, IonInput, IonPage, IonThumbnail,
+    IonHeader, IonIcon, IonPage, IonThumbnail,
     IonTitle, IonToolbar
 } from '@ionic/react';
 import './ImageEditorComponent.css';
@@ -10,33 +10,41 @@ import {
     addOutline, appsOutline, cameraOutline, caretDown, caretUp, closeOutline,
     ellipsisHorizontalOutline, imageOutline,
     layersOutline,
-    move,
     pencil,
     removeOutline,
     returnUpBackOutline,
     returnUpForwardOutline,
     textOutline, trashBinOutline
 } from 'ionicons/icons';
-import MainImageEditor from "../components/editor";
+import {EditorMode, LayerObject} from "../types/editor";
+import CanvasEditor from "../components/CanvasEditor";
 
-let mainImageEditor:MainImageEditor;
+
+let _colorTimeout:NodeJS.Timeout|number|undefined|null|string;
 const ImageEditorComponent: React.FC = () => {
     const {takePhoto, loadSaved, photos, pickPhotoFromGallery} = usePhotoGallery();
 
-    if (!mainImageEditor) {
-        mainImageEditor = new MainImageEditor()
-    }
     const [thumbnailContainerIcon, setThumbnailContainerIcon] = useState("up");
-    const [state, setState] = useState("drag");
     const [color, setColor] = useState("black");
+    const [layers, setLayers] = useState<LayerObject[]>([]);
+    const [mode, setMode] = useState<EditorMode>("drag");
+    const [selected, setSelected] = useState<LayerObject|undefined>(undefined)
 
-    const [selected, setSelected] = useState<HTMLElement|undefined>(undefined)
-    useEffect(() => {
-        loadSaved().finally(()=>{
-            mainImageEditor.init("#editorCanvas", setSelected);
-            // mainImageEditor.applyMultiTouchRotationFeature();
-        });
-    }, [ loadSaved ]);
+   useEffect(() => {
+        void loadSaved();
+       // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const setColorDelayed = (color: string) => {
+        console.log('Color: '+color);
+        if (_colorTimeout) {
+            clearTimeout(_colorTimeout);
+        }
+        _colorTimeout = setTimeout(() => {
+            setColor(color);
+        }, 500);
+        return color;
+    };
 
     const toggleImageSelectorContainer = () => {
         const footer = document.getElementById("footer");
@@ -68,10 +76,82 @@ const ImageEditorComponent: React.FC = () => {
         toggleImageSelectorContainer();
     }
     const imageOnClick = (photo: UserPhoto) => {
-        mainImageEditor.addImageElement(photo.webviewPath || "");
+        setLayers([...layers.map(l=> {
+            l.selected = false
+            return l;
+        }), {
+            type: 'image',
+            content: photo.webviewPath || "",
+            selected: true
+        }])
         toggleImageSelectorContainer();
     }
-    // @ts-ignore
+
+    const addText = (string = "") => {
+        setLayers([...layers.map(l=> {
+            l.selected = false
+            return l;
+        }), {
+            type: 'text',
+            content: string,
+            selected: true
+        }])
+    }
+
+    const moveUp = () => {
+        if (!selected) {
+            return;
+        }
+        const selectedIndex = layers.findIndex((layer) => layer === selected);
+        if (selectedIndex > 0) {
+            const newLayers = [...layers];
+            const temp = newLayers[selectedIndex];
+            newLayers[selectedIndex] = newLayers[selectedIndex - 1];
+            newLayers[selectedIndex - 1] = temp;
+
+            setLayers(newLayers);
+            // setSelected(newLayers[selectedIndex - 1]);
+        }
+    }
+
+    const zoomLayer = (scaleType: number) => {
+        if (!selected) {
+            return;
+        }
+
+        setLayers([...layers.map(layer => {
+            if (layer === selected) {
+                if (layer.type === "text") {
+                    layer.fontSize = layer.fontSize ? layer.fontSize + scaleType : 16 + scaleType;
+                } else {
+                    layer.width = Math.floor((layer.width || 100) * (1 + scaleType * 0.1));
+                    layer.height = Math.floor((layer.height || 100) * (1 + scaleType * 0.1));
+                }
+            }
+            return layer;
+        })]);
+    }
+
+    const rotate = (angle: number) => {
+        if (!selected) {
+            return;
+        }
+
+        setLayers([...layers.map(layer => {
+            if (layer === selected) {
+                layer.angle = (layer.angle || 0) + angle;
+            }
+            return layer;
+        })]);
+    };
+
+    const removeSelected = () => {
+        if (!selected) {
+            return;
+        }
+
+        setLayers([...layers.filter(layer => layer !== selected)]);
+    }
     return (
     <IonPage placeholder={undefined}>
       <IonHeader placeholder={undefined}>
@@ -79,18 +159,21 @@ const ImageEditorComponent: React.FC = () => {
           <IonTitle placeholder={undefined}>Meme/Image Editor</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen placeholder={undefined}>
-          <div id={"editorCanvas"}>
-
-          </div>
-          <IonFabButton size="small" onClick={() => mainImageEditor.addTextElement()} style={{
+      <IonContent fullscreen placeholder={undefined} scrollY={false} scrollX={false}>
+          <CanvasEditor selected={selected}
+                        setSelected={setSelected}
+                        color={color}
+                        layers={layers}
+                        setLayers={setLayers}
+                        mode={mode}/>
+          <IonFabButton size="small" onClick={() => addText('Edit me')} style={{
               position: "absolute", top: "55px",
               right: "calc(var(--ion-safe-area-right, 0px))"
           }} placeholder={undefined}>
               <IonIcon size="small" icon={textOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => mainImageEditor.moveUpper()} style={{
+          <IonFabButton size="small" onClick={() => moveUp()} style={{
               position: "absolute", top: "110px",
               right: "calc(var(--ion-safe-area-right, 0px))"
           }} disabled={!selected} placeholder={undefined}>
@@ -104,15 +187,15 @@ const ImageEditorComponent: React.FC = () => {
               <input type="color"
                      className="colorPicker"
                      style={{padding: "0px"}}
-                     onChange={(e)=> mainImageEditor.setColor(e.target.value, setColor)}/>
+                     onChange={(e)=> setColorDelayed(e.target.value)}/>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => setState(mainImageEditor.toggleEditorState())} style={{
+          <IonFabButton size="small" onClick={() => setMode(mode !== "drag" ? "drag" : "edit")} style={{
               position: "absolute", top: "220px",
               right: "calc(var(--ion-safe-area-right, 0px))"
           }} disabled={!selected} placeholder={undefined}>
               {
-                  state === 'none' || state === 'drag' ?
+                  mode === 'drag' ?
                       <IonIcon size="small" icon={pencil} placeholder={undefined}> </IonIcon>
                       : <IonIcon size="small" icon={addOutline} placeholder={undefined}> </IonIcon>
 
@@ -120,16 +203,16 @@ const ImageEditorComponent: React.FC = () => {
 
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+          <IonFabButton size="small" onClick={() => zoomLayer(1)} style={{
               position: "absolute", top: "330px",
               right: "calc(var(--ion-safe-area-right, 0px))"
-          }} placeholder={undefined}>
+          }} disabled={!selected} placeholder={undefined}>
               <IonIcon size="small" icon={addOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
-          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+          <IonFabButton size="small" onClick={() => zoomLayer(-1)} style={{
               position: "absolute", top: "385px",
               right: "calc(var(--ion-safe-area-right, 0px))"
-          }} placeholder={undefined}>
+          }} disabled={!selected} placeholder={undefined}>
               <IonIcon size="small" icon={removeOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
@@ -144,15 +227,15 @@ const ImageEditorComponent: React.FC = () => {
           </IonFabButton>
 
 
-          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+          <IonFabButton size="small" onClick={() => rotate(-90)} style={{
               position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
               left: "calc(var(--ion-safe-area-left, 0) + 55px)"
-          }} placeholder={undefined}>
+          }} disabled={!selected} placeholder={undefined}>
               <IonIcon size="small" icon={returnUpBackOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
 
-          <IonFabButton color="danger" size="small" onClick={() => mainImageEditor.removeSelected()} style={{
+          <IonFabButton color="danger" size="small" onClick={() => removeSelected()} style={{
               position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
               left: "calc(var(--ion-safe-area-left, 0) + 137.5px)",
               display: selected ? 'block' : 'none'
@@ -160,10 +243,10 @@ const ImageEditorComponent: React.FC = () => {
               <IonIcon size="small" icon={trashBinOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => mainImageEditor.switchToEdit()} style={{
+          <IonFabButton size="small" onClick={() => rotate(90)} style={{
               position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
               left: "calc(var(--ion-safe-area-left, 0px) + 220px)"
-          }} placeholder={undefined}>
+          }} disabled={!selected} placeholder={undefined}>
               <IonIcon size="small" icon={returnUpForwardOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
