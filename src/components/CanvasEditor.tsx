@@ -133,7 +133,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
         if (layer !== selected) {
             return setSelected(layer);
         }
-        setSelected(undefined)
+        // setSelected(undefined)
     }
 
     function handleContentChange(event: React.FocusEvent<HTMLDivElement, Element>, layer: LayerObject) {
