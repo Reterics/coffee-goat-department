@@ -6,9 +6,9 @@ class StorageManager {
     private storageContainer: any;
     private timeout: NodeJS.Timeout | undefined;
 
-    constructor() {
+    constructor(name = '__coffee_goat_dp') {
         this.storage = new Storage({
-            name: '__coffee_goat_dp',
+            name: name,
             driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage]
         });
         this.isLoaded = false;

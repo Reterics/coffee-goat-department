@@ -1,0 +1,10 @@
+.thumbnail-image {
+    width: 100%;
+    max-width: none;
+    height: auto;
+}
+
+.thumbnail-image-outer {
+    width: 25vw;
+    padding: 2px;
+}

@@ -13,7 +13,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import {images, square, triangle} from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import ImageEditorComponent from './pages/ImageEditorComponent';
-import Tab3 from './pages/Tab3';
+import GalleryComponent from './pages/GalleryComponent';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,44 +33,49 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import {useExportedGallery} from "./components/usePhotoGallery";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet placeholder={undefined}>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <ImageEditorComponent />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom" placeholder={undefined}>
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon icon={triangle} placeholder={undefined} />
-            <IonLabel placeholder={undefined}>Home</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={images} placeholder={undefined} />
-            <IonLabel placeholder={undefined}>Editor</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={square} placeholder={undefined} />
-            <IonLabel placeholder={undefined}>Gallery</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const {gallery, loadSaved, exportImage} = useExportedGallery();
+
+  return (
+      <IonApp>
+        <IonReactRouter>
+          <IonTabs>
+            <IonRouterOutlet placeholder={undefined}>
+              <Route exact path="/home">
+                <Tab1/>
+              </Route>
+              <Route exact path="/editor">
+                <ImageEditorComponent galleryReload={loadSaved} exportImage={exportImage}/>
+              </Route>
+              <Route path="/gallery">
+                <GalleryComponent gallery={gallery} loadSaved={loadSaved}/>
+              </Route>
+              <Route exact path="/">
+                <Redirect to="/tab1"/>
+              </Route>
+            </IonRouterOutlet>
+            <IonTabBar slot="bottom" placeholder={undefined}>
+              <IonTabButton tab="tab1" href="/home">
+                <IonIcon icon={triangle} placeholder={undefined}/>
+                <IonLabel placeholder={undefined}>Home</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab2" href="/editor">
+                <IonIcon icon={images} placeholder={undefined}/>
+                <IonLabel placeholder={undefined}>Editor</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/gallery">
+                <IonIcon icon={square} placeholder={undefined}/>
+                <IonLabel placeholder={undefined}>Gallery</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+        </IonReactRouter>
+      </IonApp>
+  );
+};
 
 export default App;

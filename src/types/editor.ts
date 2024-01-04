@@ -1,3 +1,4 @@
+
 export type LayerType = 'text'|'image';
 
 export interface LayerObject {
@@ -21,5 +22,6 @@ export interface CanvasEditorArguments {
     layers: LayerObject[]
     setLayers: Function
     mode: EditorMode
+    staticCanvas?: HTMLCanvasElement|null
 }
 
