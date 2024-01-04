@@ -33,9 +33,9 @@ export async function base64FromPath(path: string): Promise<string> {
     });
 }
 
-export function usePhotoGallery(name = '__coffee_goat_dp') {
+export function usePhotoGallery() {
     const [photos, setPhotos] = useState<UserPhoto[]>([]);
-    let storageManager = new StorageManager(name);
+    let storageManager = new StorageManager('__coffee_goat_dp');
 
     const readBlobAsBase64 = (blob: Blob): Promise<string|null> => {
         return new Promise(resolve => {
@@ -124,6 +124,7 @@ export function usePhotoGallery(name = '__coffee_goat_dp') {
         storageManager.saveLoadedKeyWithDelay();
     }
 
+
     const takePhoto = async () => {
         const photo = await Camera.getPhoto({
             quality: 100,
@@ -191,4 +192,76 @@ export function usePhotoGallery(name = '__coffee_goat_dp') {
     };
 }
 
+
+export function useExportedGallery() {
+    const [gallery, setGallery] = useState<UserPhoto[]>([]);
+    let storageManager = new StorageManager('gallery');
+
+
+    const saveBase64Picture = async (dataUri: string, fileName: string): Promise<UserPhoto|null> => {
+        const savedFile = await Filesystem.writeFile({
+            path: fileName,
+            data: dataUri,
+            directory: Directory.Data,
+        });
+
+        if (isPlatform('hybrid')) {
+            // Display the new image by rewriting the 'file://' path to HTTP
+            // Details: https://ionicframework.com/docs/building/webview#file-protocol
+            return {
+                filepath: savedFile.uri,
+                webviewPath: Capacitor.convertFileSrc(savedFile.uri),
+            };
+        } else {
+            // Use webPath to display the new image instead of base64 since it's
+            // already loaded into memory
+            return {
+                filepath: fileName,
+                webviewPath: dataUri,
+            };
+        }
+    };
+
+    const exportImage = async (canvas: HTMLCanvasElement, name?: string) => {
+        const fileName = new Date().getTime() + '.png';
+        const dataUri = canvas.toDataURL()
+        const savedFileImage = await saveBase64Picture(dataUri, fileName);
+        if (savedFileImage) {
+            const newPhotos = [savedFileImage, ...gallery];
+            setGallery(newPhotos);
+            storageManager.saveLocally(PHOTO_STORAGE, newPhotos);
+            storageManager.saveLoadedKeyWithDelay();
+        }
+    }
+
+    const loadSaved = async () => {
+        await storageManager.initStorage();
+        const photosInPreferences = (await storageManager.get(PHOTO_STORAGE) || []) as UserPhoto[]; // Preferences.get({ key: PHOTO_STORAGE });
+
+        //const photosInPreferences = (value ? JSON.parse(value) : []) as UserPhoto[];
+        // If running on the web...
+        if (!isPlatform('hybrid')) {
+            for (let photo of photosInPreferences) {
+                try {
+                    const file = await Filesystem.readFile({
+                        path: photo.filepath,
+                        directory: Directory.Data
+                    });
+                    // Web platform only: Load the photo as base64 data
+                    photo.webviewPath = `data:image/png;base64,${file.data}`;
+                } catch (e) {
+                    console.error(e);
+                }
+
+            }
+        }
+        setGallery(photosInPreferences);
+    };
+
+    return{
+        gallery,
+        loadSaved,
+        exportImage
+    };
+}
 

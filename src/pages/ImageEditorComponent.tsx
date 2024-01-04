@@ -4,8 +4,8 @@ import {
     IonTitle, IonToolbar
 } from '@ionic/react';
 import './ImageEditorComponent.css';
-import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
-import React, {useEffect, useState} from "react";
+import {useExportedGallery, usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
+import React, {useEffect, useRef, useState} from "react";
 import {
     addOutline, appsOutline, cameraOutline, caretDown, caretUp, closeOutline,
     ellipsisHorizontalOutline, imageOutline,
@@ -13,24 +13,26 @@ import {
     pencil,
     removeOutline,
     returnUpBackOutline,
-    returnUpForwardOutline,
+    returnUpForwardOutline, saveOutline,
     textOutline, trashBinOutline
 } from 'ionicons/icons';
 import {EditorMode, LayerObject} from "../types/editor";
 import CanvasEditor from "../components/CanvasEditor";
+import html2canvas from "html2canvas";
 
 
 let _colorTimeout:NodeJS.Timeout|number|undefined|null|string;
-const ImageEditorComponent: React.FC = () => {
+const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Function, exportImage:Function}): JSX.Element => {
     const {takePhoto, loadSaved, photos, pickPhotoFromGallery} = usePhotoGallery();
 
     const [thumbnailContainerIcon, setThumbnailContainerIcon] = useState("up");
     const [color, setColor] = useState("black");
     const [layers, setLayers] = useState<LayerObject[]>([]);
     const [mode, setMode] = useState<EditorMode>("drag");
-    const [selected, setSelected] = useState<LayerObject|undefined>(undefined)
+    const [selected, setSelected] = useState<LayerObject|undefined>(undefined);
+    const [staticCanvas, setStaticCanvas] = useState<HTMLCanvasElement|null>(null);
 
-   useEffect(() => {
+    useEffect(() => {
         void loadSaved();
        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -151,7 +153,35 @@ const ImageEditorComponent: React.FC = () => {
         }
 
         setLayers([...layers.filter(layer => layer !== selected)]);
-    }
+    };
+
+    const exportToGallery = () => {
+        const canvasEditor = document.getElementById('canvasEditor');
+        if (canvasEditor) {
+            const mainOuter = canvasEditor.querySelector('div');
+            const canvas = canvasEditor.querySelector('canvas');
+            if (mainOuter && canvas) {
+                console.log('Execute html2canvas')
+                html2canvas(mainOuter, {
+                    // scale: 4,
+                    width: canvas.offsetWidth,
+                    height: canvas.offsetHeight,
+                    backgroundColor: "#e1e1e1"
+                }).then(async generatedCanvas => {
+                    generatedCanvas.id = "image_" + new Date().getTime().toString();
+                    await exportImage(generatedCanvas);
+                    galleryReload();
+                    setStaticCanvas(generatedCanvas);
+                    // setLayers([]);
+                });
+            } else {
+                console.error('mainOuter or canvas reference has not found');
+            }
+        } else {
+            console.error('CanvasEditor reference has not found');
+        }
+    };
+
     return (
     <IonPage placeholder={undefined}>
       <IonHeader placeholder={undefined}>
@@ -160,7 +190,8 @@ const ImageEditorComponent: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen placeholder={undefined} scrollY={false} scrollX={false}>
-          <CanvasEditor selected={selected}
+          <CanvasEditor staticCanvas={staticCanvas}
+                        selected={selected}
                         setSelected={setSelected}
                         color={color}
                         layers={layers}
@@ -200,7 +231,13 @@ const ImageEditorComponent: React.FC = () => {
                       : <IonIcon size="small" icon={addOutline} placeholder={undefined}> </IonIcon>
 
               }
+          </IonFabButton>
 
+          <IonFabButton size="small" onClick={() => exportToGallery()} style={{
+              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 65px)",
+              right: "calc(var(--ion-safe-area-right, 0px))"
+          }} disabled={!layers.length} placeholder={undefined}>
+              <IonIcon size="small" icon={saveOutline} placeholder={undefined}> </IonIcon>
           </IonFabButton>
 
           <IonFabButton size="small" onClick={() => zoomLayer(1)} style={{

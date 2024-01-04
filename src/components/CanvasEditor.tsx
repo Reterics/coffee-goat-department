@@ -1,9 +1,9 @@
 import React, {useEffect, useRef} from "react";
 import {CanvasEditorArguments, LayerObject} from "../types/editor";
 import interact from 'interactjs'
+import './CanvasEditor.css';
 
-
-const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode}:CanvasEditorArguments): JSX.Element => {
+const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, staticCanvas}:CanvasEditorArguments): JSX.Element => {
 
     const svg = useRef(null);
     const canvas = useRef(null);
@@ -109,7 +109,25 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode}:Ca
 
     useEffect(() => {
         console.log("Loaded: ", svg.current, canvas.current);
-    }, []);
+        if (canvas.current && staticCanvas) {
+            const destCtx = (canvas.current as HTMLCanvasElement).getContext('2d');
+            const destCanvas = canvas.current as HTMLCanvasElement;
+
+            const sourceCtx = staticCanvas.getContext('2d');
+
+            if (sourceCtx && destCtx) {
+                destCanvas.width = staticCanvas.width;
+                destCanvas.height = staticCanvas.height;
+
+                // destCtx.clearRect(0, 0, Math.max(destCanvas.width, destCanvas.offsetWidth), Math.max(destCanvas.height, destCanvas.offsetHeight));
+                destCtx.imageSmoothingEnabled = false;
+                destCtx.drawImage(staticCanvas, 0, 0);
+                destCanvas.style.visibility = "hidden";
+            } else {
+                console.error('Receiving destination context failed');
+            }
+        }
+    }, [canvas.current, staticCanvas]);
 
     const onClickLayer = (layer: LayerObject) => {
         if (layer !== selected) {
@@ -160,7 +178,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode}:Ca
     };
 
     return (
-        <div id="canvasEditor"        >
+        <div id="canvasEditor">
             <canvas key="canvas" ref={canvas}></canvas>
             <svg key="svg" ref={svg} xmlns="http://www.w3.org/2000/svg"></svg>
             <div key="outer" id="mainOuter">
