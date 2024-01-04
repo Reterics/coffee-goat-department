@@ -13,7 +13,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import {images, square, triangle} from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import ImageEditorComponent from './pages/ImageEditorComponent';
-import Tab3 from './pages/Tab3';
+import GalleryComponent from './pages/GalleryComponent';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -41,29 +41,29 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet placeholder={undefined}>
-          <Route exact path="/tab1">
+          <Route exact path="/home">
             <Tab1 />
           </Route>
-          <Route exact path="/tab2">
+          <Route exact path="/editor">
             <ImageEditorComponent />
           </Route>
-          <Route path="/tab3">
-            <Tab3 />
+          <Route path="/gallery">
+            <GalleryComponent />
           </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom" placeholder={undefined}>
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="tab1" href="/home">
             <IonIcon icon={triangle} placeholder={undefined} />
             <IonLabel placeholder={undefined}>Home</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="tab2" href="/editor">
             <IonIcon icon={images} placeholder={undefined} />
             <IonLabel placeholder={undefined}>Editor</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="tab3" href="/gallery">
             <IonIcon icon={square} placeholder={undefined} />
             <IonLabel placeholder={undefined}>Gallery</IonLabel>
           </IonTabButton>

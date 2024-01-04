@@ -33,9 +33,9 @@ export async function base64FromPath(path: string): Promise<string> {
     });
 }
 
-export function usePhotoGallery() {
+export function usePhotoGallery(name = '__coffee_goat_dp') {
     const [photos, setPhotos] = useState<UserPhoto[]>([]);
-    let storageManager = new StorageManager();
+    let storageManager = new StorageManager(name);
 
     const readBlobAsBase64 = (blob: Blob): Promise<string|null> => {
         return new Promise(resolve => {
