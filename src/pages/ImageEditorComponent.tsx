@@ -4,8 +4,8 @@ import {
     IonTitle, IonToolbar
 } from '@ionic/react';
 import './ImageEditorComponent.css';
-import {useExportedGallery, usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
-import React, {useEffect, useRef, useState} from "react";
+import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
+import React, {useEffect, useState} from "react";
 import {
     addOutline, appsOutline, cameraOutline, caretDown, caretUp, closeOutline,
     ellipsisHorizontalOutline, imageOutline,

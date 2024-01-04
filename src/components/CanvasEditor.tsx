@@ -127,7 +127,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
                 console.error('Receiving destination context failed');
             }
         }
-    }, [canvas.current, staticCanvas]);
+    }, [staticCanvas]);
 
     const onClickLayer = (layer: LayerObject) => {
         if (layer !== selected) {

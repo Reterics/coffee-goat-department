@@ -34,7 +34,6 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import {useExportedGallery} from "./components/usePhotoGallery";
-import galleryComponent from "./pages/GalleryComponent";
 
 setupIonicReact();
 

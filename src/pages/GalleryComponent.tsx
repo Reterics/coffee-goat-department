@@ -1,12 +1,13 @@
-import {IonContent, IonHeader, IonPage, IonThumbnail, IonTitle, IonToolbar} from '@ionic/react';
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import './GalleryComponent.css';
 import React, {useEffect} from "react";
-import {useExportedGallery, UserPhoto} from "../components/usePhotoGallery";
+import {UserPhoto} from "../components/usePhotoGallery";
 
 const GalleryComponent = ({gallery, loadSaved}: {gallery:UserPhoto[], loadSaved:Function}): JSX.Element => {
 
     useEffect(() => {
         void loadSaved()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // @ts-ignore
     const openImage = (photo) => {
