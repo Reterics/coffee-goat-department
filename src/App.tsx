@@ -44,11 +44,11 @@ const App: React.FC = () => {
       <IonApp>
         <IonReactRouter>
           <IonTabs>
-            <IonRouterOutlet placeholder={undefined}>
-              <Route exact path="/home">
+            <IonRouterOutlet>
+              <Route path="/home">
                 <Tab1/>
               </Route>
-              <Route exact path="/editor">
+              <Route path="/editor">
                 <ImageEditorComponent galleryReload={loadSaved} exportImage={exportImage}/>
               </Route>
               <Route path="/gallery">
@@ -58,18 +58,18 @@ const App: React.FC = () => {
                 <Redirect to="/tab1"/>
               </Route>
             </IonRouterOutlet>
-            <IonTabBar slot="bottom" placeholder={undefined}>
+            <IonTabBar slot="bottom">
               <IonTabButton tab="tab1" href="/home">
-                <IonIcon icon={triangle} placeholder={undefined}/>
-                <IonLabel placeholder={undefined}>Home</IonLabel>
+                <IonIcon icon={triangle}/>
+                <IonLabel>Home</IonLabel>
               </IonTabButton>
               <IonTabButton tab="tab2" href="/editor">
-                <IonIcon icon={images} placeholder={undefined}/>
-                <IonLabel placeholder={undefined}>Editor</IonLabel>
+                <IonIcon icon={images}/>
+                <IonLabel>Editor</IonLabel>
               </IonTabButton>
               <IonTabButton tab="tab3" href="/gallery">
-                <IonIcon icon={square} placeholder={undefined}/>
-                <IonLabel placeholder={undefined}>Gallery</IonLabel>
+                <IonIcon icon={square}/>
+                <IonLabel>Gallery</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
