@@ -18,6 +18,7 @@ export type EditorMode = 'drag'|'edit';
 export interface CanvasEditorArguments {
     selected?: LayerObject
     setSelected: Function
+    setMode: Function
     color: string
     layers: LayerObject[]
     setLayers: Function

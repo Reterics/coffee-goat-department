@@ -189,6 +189,7 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
           <CanvasEditor staticCanvas={staticCanvas}
                         selected={selected}
                         setSelected={setSelected}
+                        setMode={setMode}
                         color={color}
                         layers={layers}
                         setLayers={setLayers}
