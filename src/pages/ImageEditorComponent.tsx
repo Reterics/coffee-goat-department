@@ -5,7 +5,7 @@ import {
 } from '@ionic/react';
 import './ImageEditorComponent.css';
 import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     addOutline, appsOutline, cameraOutline, caretDown, caretUp, closeOutline,
     ellipsisHorizontalOutline, imageOutline,
@@ -48,18 +48,6 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
             setColor(color);
         }, 500);
         return color;
-    };
-
-    const toggleImageSelectorContainer = () => {
-        const footer = document.getElementById("footer");
-        if (footer) {
-            if (footer.style.display === "none") {
-                footer.style.display = "block";
-            } else {
-                footer.style.display = "none"
-            }
-
-        }
     };
 
     const toggleThumbnailContainer = () => {
