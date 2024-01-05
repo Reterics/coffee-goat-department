@@ -9,7 +9,7 @@ export const SideButton = ({onClick, disabled, icon, children, position, style, 
         bottom: 10
     }
     const customStyle = style || {} as CSSStyleDeclaration;
-    const nth = order || 1;
+    const nth = order || 0;
 
     switch (position) {
         case "top-right":

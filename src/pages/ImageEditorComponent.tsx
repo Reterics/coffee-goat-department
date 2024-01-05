@@ -1,11 +1,11 @@
 import {
-    IonContent, IonFab, IonFabButton, IonFabList, IonFooter,
+    IonContent, IonFab, IonFabButton, IonFabList,
     IonHeader, IonIcon, IonPage, IonThumbnail,
     IonTitle, IonToolbar
 } from '@ionic/react';
 import './ImageEditorComponent.css';
 import {usePhotoGallery, UserPhoto} from "../components/usePhotoGallery";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     addOutline, appsOutline, cameraOutline, caretDown, caretUp, closeOutline,
     ellipsisHorizontalOutline, imageOutline,
@@ -33,6 +33,7 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
     const [selected, setSelected] = useState<LayerObject|undefined>(undefined);
     const [staticCanvas, setStaticCanvas] = useState<HTMLCanvasElement|null>(null);
 
+    const [imageSelector, setImageSelector] = useState<boolean>(false);
     useEffect(() => {
         void loadSaved();
        // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,21 +63,12 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
     };
 
     const toggleThumbnailContainer = () => {
-        const thumbnailContent = document.getElementById("thumbnailContent");
-        if (thumbnailContent) {
-            if (!thumbnailContent.classList.contains('opened')) {
-                thumbnailContent.classList.add('opened')
-                setThumbnailContainerIcon("down");
-            } else {
-                thumbnailContent.classList.remove('opened')
-                setThumbnailContainerIcon("up")
-            }
-        }
+        setThumbnailContainerIcon(thumbnailContainerIcon === "down" ? "up" : "down");
     }
 
     const pickImageFromGallery = async () => {
         await pickPhotoFromGallery();
-        toggleImageSelectorContainer();
+        setImageSelector(!imageSelector);
     }
     const imageOnClick = (photo: UserPhoto) => {
         setLayers([...layers.map(l=> {
@@ -87,7 +79,10 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
             content: photo.webviewPath || "",
             selected: true
         }])
-        toggleImageSelectorContainer();
+        setImageSelector(!imageSelector);
+        if (thumbnailContainerIcon === "down") {
+            setThumbnailContainerIcon("up");
+        }
     }
 
     const addText = (string = "") => {
@@ -245,14 +240,14 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
 
           <SideButton
               onClick={() => zoomLayer(1)}
-              order={6}
+              order={5}
               disabled={!selected}
               position={'top-right'}
               icon={addOutline}
           />
           <SideButton
               onClick={() => zoomLayer(-1)}
-              order={7}
+              order={6}
               disabled={!selected}
               position={'top-right'}
               icon={removeOutline}
@@ -260,13 +255,13 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
 
           <SideButton
               onClick={() => exportToGallery()}
-              order={2}
+              order={3}
               disabled={!layers.length}
               position={'bottom-right'}
               icon={saveOutline}
           />
           <SideButton
-              onClick={() => toggleImageSelectorContainer()}
+              onClick={() => setImageSelector(!imageSelector)}
               order={1}
               position={'bottom-right'}
               icon={appsOutline}
@@ -296,16 +291,23 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
               <IonIcon size="small" icon={returnUpForwardOutline}> </IonIcon>
           </IonFabButton>
 
-          <div id={"footer"} style={{display:"none"}}>
+          {imageSelector && <SideButton
+              onClick={() => setImageSelector(!imageSelector)}
+              order={2}
+              position={'bottom-right'}
+              icon={closeOutline}
+          />}
+          <div style={{display:imageSelector ? "block" : "none"}}>
 
               <IonFab vertical={"bottom"} horizontal={"end"} slot={"fixed"}
-                      style={{right: 'calc(var(--ion-safe-area-right, 0px))', position: 'absolute'}}
+                      activated={thumbnailContainerIcon === "down" ? true : undefined}
+                      style={{right: 'calc(var(--ion-safe-area-right, 0px))', position: 'absolute',
+                          bottom: "calc(var(--offset-bottom, 0px) + 10px"}}
                      >
                   <IonFabButton size="small" >
                       <IonIcon size="small" icon={ellipsisHorizontalOutline}> </IonIcon>
                   </IonFabButton>
-                  <IonFabList side="start">
-
+                  <IonFabList side="start" >
 
                       <IonFabButton onClick={() => takePhoto()}>
                           <IonIcon icon={cameraOutline}> </IonIcon>
@@ -313,20 +315,19 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
                       <IonFabButton onClick={() => pickImageFromGallery()}>
                           <IonIcon icon={imageOutline}> </IonIcon>
                       </IonFabButton>
-
-                      <IonFabButton size="small" onClick={() => toggleImageSelectorContainer()}>
-                          <IonIcon size="small" icon={closeOutline}> </IonIcon>
+                      <IonFabButton size="small" onClick={(e) => toggleThumbnailContainer()}>
+                          <IonIcon size="small" icon={thumbnailContainerIcon === "up" ? caretUp : caretDown}/>
                       </IonFabButton>
-                      <IonFabButton size="small" onClick={() => toggleThumbnailContainer()}>
-                          <IonIcon size="small" icon={thumbnailContainerIcon === "up" ? caretUp : caretDown}
-                                  > </IonIcon>
-                      </IonFabButton>
-
                   </IonFabList>
               </IonFab>
-              <IonToolbar>
-                  <IonContent id="thumbnailContent" style={{display: "flex"}}>
-
+              <IonToolbar style={{
+                  zIndex: 901,
+                  bottom:thumbnailContainerIcon === "up" ? '0' : '50vh'
+              }}>
+                  <IonContent id="thumbnailContent" style={{
+                      display: "flex",
+                      height:thumbnailContainerIcon === "up" ? '0' : '60vh'
+                  }}>
                       {
                           photos.map((photo, index) =>
                               <div key={index} className={"imageThumbnailFlex"}>
@@ -341,9 +342,6 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
               </IonToolbar>
           </div>
       </IonContent>
-        <IonFooter style={{display: "none"}}>
-
-        </IonFooter>
     </IonPage>
   );
 };
