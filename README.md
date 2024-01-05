@@ -22,6 +22,9 @@ npm run update_android
 npm run build_apk
 ```
 
+## Preview
+![preview.mp4](./public/assets/preview.mp4)
+
 ## Contribute
 
 There are many ways to [contribute](https://github.com/Reterics/invoice-management/blob/main/CONTRIBUTING.md) to Invoice Management.
