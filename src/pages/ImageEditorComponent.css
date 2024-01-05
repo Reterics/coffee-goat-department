@@ -100,3 +100,8 @@ input.colorPicker::-moz-color-swatch {
     border-radius: 50%;
     border: 3px solid var(--ion-color-primary, #3880ff);;
 }
+
+html {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
