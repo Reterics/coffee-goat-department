@@ -8,3 +8,17 @@
     width: 25vw;
     padding: 2px;
 }
+
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.modal-image {
+    width: 100%;
+    height: 100%;
+}
+
+img.modal-image {
+    -webkit-touch-callout: default;
+}

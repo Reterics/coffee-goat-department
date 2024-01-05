@@ -7,6 +7,9 @@
 #thumbnailContent {
     min-height: 58px;
 }
+#thumbnailContent > .inner-scroll {
+    overflow: hidden;
+}
 #thumbnailContent.opened {
     min-height: 50vh;
 }
@@ -16,10 +19,10 @@
 }
 
 #canvasEditor{
-    width: calc(100% - 65px);
+    width: calc(100% - 60px);
     height: calc(100% - 56px - 20px);
     border: 1px solid var(--ion-tab-bar-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.07))));
-    margin: 10px 58px 10px auto;
+    margin: 0 58px 3px auto;
 }
 
 #canvasEditor > * {
@@ -96,4 +99,9 @@ input.colorPicker::-webkit-color-swatch {
 input.colorPicker::-moz-color-swatch {
     border-radius: 50%;
     border: 3px solid var(--ion-color-primary, #3880ff);;
+}
+
+html {
+    overflow: hidden;
+    overscroll-behavior: none;
 }

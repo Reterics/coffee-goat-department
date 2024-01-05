@@ -3,7 +3,7 @@ import {CanvasEditorArguments, LayerObject} from "../types/editor";
 import interact from 'interactjs'
 import './CanvasEditor.css';
 
-const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, staticCanvas}:CanvasEditorArguments): JSX.Element => {
+const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, setMode, staticCanvas}:CanvasEditorArguments): JSX.Element => {
 
     const svg = useRef(null);
     const canvas = useRef(null);
@@ -43,7 +43,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
 
                             // translate the element
                             target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'; //rotate('+angle+'deg)
-                            // update the posiion attributes
+                            // update the position attributes
                             target.setAttribute('data-x', x)
                             target.setAttribute('data-y', y)
                         },
@@ -134,9 +134,31 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
             return setSelected(layer);
         }
         // setSelected(undefined)
+    };
+
+    const onDoubleClickLayer = (layer: LayerObject, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
+        if (layer === selected && layer.type === "text" && mode === "drag") {
+            setMode("edit")
+        }
+    };
+
+    const onDoubleClickBackground = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (selected) {
+            // In case if stopPropagation fails, I will remove it later
+            const target = e.currentTarget;
+            if (target.id) {
+                const layerIndex = Number.parseInt(target.id.replace("layer", "").trim());
+                if (!Number.isNaN(layerIndex) && layers[layerIndex]) {
+                    return;
+                }
+            }
+            setSelected(undefined);
+            setMode("drag");
+        }
     }
 
-    function handleContentChange(event: React.FocusEvent<HTMLDivElement, Element>, layer: LayerObject) {
+    const handleContentChange = (event: React.FocusEvent<HTMLDivElement, Element>, layer: LayerObject) => {
         const innerDiv = event.currentTarget.querySelector('div');
         if (layer.type === "text" && innerDiv && innerDiv.innerText !== layer.content) {
             setLayers([...layers.map(l => {
@@ -146,7 +168,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
                 return l;
             })]);
         }
-    }
+    };
 
     const renderLayer = (layer: LayerObject, index: number) => {
         return (<div
@@ -169,6 +191,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
             fontSize: (layer.fontSize || 16) + "px"
         }}
         onClick={() => onClickLayer(layer)}
+        onDoubleClick={(e) => onDoubleClickLayer(layer, e)}
         contentEditable={mode === "edit" && layer === selected ? "true" : "inherit"}
         dangerouslySetInnerHTML={layer.type === "text" ?
             {__html: "<div>" + layer.content + "</div>"} :
@@ -181,7 +204,7 @@ const CanvasEditor = ({selected, setSelected, color, layers, setLayers, mode, st
         <div id="canvasEditor">
             <canvas key="canvas" ref={canvas}></canvas>
             <svg key="svg" ref={svg} xmlns="http://www.w3.org/2000/svg"></svg>
-            <div key="outer" id="mainOuter">
+            <div key="outer" id="mainOuter" onDoubleClick={(e)=>onDoubleClickBackground(e)}>
                 {layers.map((layer,index)=>renderLayer(layer, index))}
             </div>
         </div>
