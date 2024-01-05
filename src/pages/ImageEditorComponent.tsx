@@ -19,6 +19,7 @@ import {
 import {EditorMode, LayerObject} from "../types/editor";
 import CanvasEditor from "../components/CanvasEditor";
 import html2canvas from "html2canvas";
+import {SideButton} from "../components/gui/SideButton";
 
 
 let _colorTimeout:NodeJS.Timeout|number|undefined|null|string;
@@ -197,71 +198,79 @@ const ImageEditorComponent = ({galleryReload, exportImage}: {galleryReload:Funct
                         layers={layers}
                         setLayers={setLayers}
                         mode={mode}/>
-          <IonFabButton size="small" onClick={() => addText('Edit me')} style={{
-              position: "absolute", top: "55px",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }}>
-              <IonIcon size="small" icon={textOutline}> </IonIcon>
-          </IonFabButton>
 
-          <IonFabButton size="small" onClick={() => moveUp()} style={{
-              position: "absolute", top: "110px",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }} disabled={!selected}>
-              <IonIcon size="small" icon={layersOutline}> </IonIcon>
-          </IonFabButton>
 
-          <IonFabButton size="small" style={{
-              position: "absolute", top: "165px",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }} color={color}>
+          <SideButton
+              onClick={() => addText('Edit me')}
+              position={'top-right'}
+              order={1}
+              icon={textOutline}
+          />
+
+          <SideButton
+              onClick={() => moveUp()}
+              disabled={!selected}
+              position={'top-right'}
+              order={2}
+              icon={layersOutline}
+          />
+
+          <SideButton
+              onClick={() => addText('Edit me')}
+              position={'top-right'}
+              order={3}
+              color={color}
+          >
               <input type="color"
                      className="colorPicker"
                      style={{padding: "0px"}}
                      onChange={(e)=> setColorDelayed(e.target.value)}/>
-          </IonFabButton>
+          </SideButton>
 
-          <IonFabButton size="small" onClick={() => setMode(mode !== "drag" ? "drag" : "edit")} style={{
-              position: "absolute", top: "220px",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }} disabled={!selected}>
+
+
+          <SideButton
+              onClick={() => setMode(mode !== "drag" ? "drag" : "edit")}
+              order={4}
+              disabled={!selected}
+              position={'top-right'}
+          >
               {
                   mode === 'drag' ?
                       <IonIcon size="small" icon={pencil}> </IonIcon>
                       : <IonIcon size="small" icon={addOutline}> </IonIcon>
 
               }
-          </IonFabButton>
+          </SideButton>
 
-          <IonFabButton size="small" onClick={() => exportToGallery()} style={{
-              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 65px)",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }} disabled={!layers.length}>
-              <IonIcon size="small" icon={saveOutline}> </IonIcon>
-          </IonFabButton>
+          <SideButton
+              onClick={() => zoomLayer(1)}
+              order={6}
+              disabled={!selected}
+              position={'top-right'}
+              icon={addOutline}
+          />
+          <SideButton
+              onClick={() => zoomLayer(-1)}
+              order={7}
+              disabled={!selected}
+              position={'top-right'}
+              icon={removeOutline}
+          />
 
-          <IonFabButton size="small" onClick={() => zoomLayer(1)} style={{
-              position: "absolute", top: "330px",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }} disabled={!selected}>
-              <IonIcon size="small" icon={addOutline}> </IonIcon>
-          </IonFabButton>
-          <IonFabButton size="small" onClick={() => zoomLayer(-1)} style={{
-              position: "absolute", top: "385px",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }} disabled={!selected}>
-              <IonIcon size="small" icon={removeOutline}> </IonIcon>
-          </IonFabButton>
-
-
-
-
-          <IonFabButton size="small" onClick={() => toggleImageSelectorContainer()} style={{
-              position: "absolute", bottom: "calc(var(--offset-bottom, 0px) + 10px)",
-              right: "calc(var(--ion-safe-area-right, 0px))"
-          }}>
-              <IonIcon size="small" icon={appsOutline}> </IonIcon>
-          </IonFabButton>
+          <SideButton
+              onClick={() => exportToGallery()}
+              order={2}
+              disabled={!layers.length}
+              position={'bottom-right'}
+              icon={saveOutline}
+          />
+          <SideButton
+              onClick={() => toggleImageSelectorContainer()}
+              order={1}
+              position={'bottom-right'}
+              icon={appsOutline}
+          />
 
 
           <IonFabButton size="small" onClick={() => rotate(-90)} style={{
