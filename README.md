@@ -24,8 +24,8 @@ npm run build_apk
 
 ## Contribute
 
-There are many ways to [contribute](https://github.com/Reterics/invoice-management/blob/main/CONTRIBUTING.md) to Invoice Management.
-* [Submit bugs](https://github.com/Reterics/invoice-management/issues) and help us verify fixes as they are checked in.
-* Review the [source code changes](https://github.com/Reterics/invoice-management/pulls).
+There are many ways to [contribute](https://github.com/Reterics/coffee-goat-department/blob/main/CONTRIBUTING.md) to Coffee Goat Department.
+* [Submit bugs](https://github.com/Reterics/coffee-goat-department/issues) and help us verify fixes as they are checked in.
+* Review the [source code changes](https://github.com/Reterics/coffee-goat-department/pulls).
 * [Contribute bug fixes](hhttps://github.com/Reterics/coffee-goat-department/blob/main/CONTRIBUTING.md).
 
